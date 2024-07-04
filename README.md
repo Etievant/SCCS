@@ -16,7 +16,7 @@ tidyr, parallel, ggplot2.
 
 * Script `Simul_ATS.R` replicates the simulation in Section 7.2. 
 
-* Script `Simul_Detection.R` replicates the simulation in Web Appendix B.1. 
+* Script `Simul_Detection.R` replicates the simulation in Web Appendix D.1. 
 
 
 ### Instructions to run each script
