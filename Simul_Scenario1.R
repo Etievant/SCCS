@@ -568,8 +568,8 @@ onerun    <- function(p) {
                     "-eta.T2", eta.T2, "-part", part, ".Rdata")
   save(res, file = myfile)
 }
-param     <- param[1:40,] # only running the scenario when conditions (i) and (ii) hold
-resultat  <- mclapply(1:nrow(param), onerun, mc.cores = 40)
+param     <- param[1:20,] # only running the scenario when conditions (i) and (ii) hold
+resultat  <- mclapply(1:nrow(param), onerun, mc.cores = 20)
 
 RES <- NULL
 for (p in 1:nrow(param)) {
@@ -765,8 +765,8 @@ onerun    <- function(p) {
                     "-eta.T2", eta.T2, "-part", part, ".Rdata")
   save(res, file = myfile)
 }
-param     <- param[1:40,] # only running the scenario when conditions (i) and (ii) hold
-resultat  <- mclapply(1:nrow(param), onerun, mc.cores = 40)
+param     <- param[1:20,] # only running the scenario when conditions (i) and (ii) hold
+resultat  <- mclapply(1:nrow(param), onerun, mc.cores = 20)
 
 RES <- NULL
 for (p in 1:nrow(param)) {
