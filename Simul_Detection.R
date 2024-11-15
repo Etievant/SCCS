@@ -38,7 +38,7 @@ P.T1.doZ1.W0    <- exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 0 + eta.T1 * 1 * 0) #
 P.T1.doZ1       <- exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 1 + eta.T1 * 1 * 1) * pW + exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 0 + eta.T1 * 1 * 0) * (1 - pW) # P(T^{Z=1} = 1)
 P.T1.doZ0       <- exp(alpha.T1 + beta.T1 * 0 + gamma.T1 * 1 + eta.T1 * 0 * 1) * pW + exp(alpha.T1 + beta.T1 * 0 + gamma.T1 * 0 + eta.T1 * 0 * 0) * (1 - pW) # P(T^{Z=0} = 1)
 
-exp.beta        <- P.T1.doZ1 / P.T1.doZ0        # marginal causal effect
+exp.beta        <- P.T1.doZ1 / P.T1.doZ0        # marginal causal risk ratio
 
 ### Varying parameter ----------------------------------------------------------
 P.DETEC.T2 <- seq(from = p.detect.T1, to = 0.7, length.out = 15) # P(D = 1 | T = 2)
@@ -266,4 +266,3 @@ ggplot(data = details.marginal.contrast, aes(x = p.detect.T2,
                      labels =c(expression(beta), "0.1", "0.2", "0.3")) +
   theme_bw(base_size = 13)
 dev.off()
-
