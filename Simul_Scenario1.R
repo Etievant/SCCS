@@ -1,8 +1,8 @@
 ## -----------------------------------------------------------------------------
 ## Description: This script illustrates Scenario 1 with violation of Condition 
-##              (i) presented in Section 5 in Etievant, Gail and Follmann (2024)
+##              (i) presented in Section 4 in Etievant, Gail and Follmann (2024)
 ##
-##              The simulation is in Section 7.1 in the Main Document
+##              The simulation is in Section 8.1 in the Main Document
 ## -----------------------------------------------------------------------------
 
 ### load packages --------------------------------------------------------------
@@ -33,9 +33,15 @@ P.T1.doZ1.W0    <- exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 0 + eta.T1 * 1 * 0) #
 P.T1.doZ1       <- exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 1 + eta.T1 * 1 * 1) * pW + exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 0 + eta.T1 * 1 * 0) * (1 - pW) # P(T^{Z=1} = 1)
 P.T1.doZ0       <- exp(alpha.T1 + beta.T1 * 0 + gamma.T1 * 1 + eta.T1 * 0 * 1) * pW + exp(alpha.T1 + beta.T1 * 0 + gamma.T1 * 0 + eta.T1 * 0 * 0) * (1 - pW) # P(T^{Z=0} = 1)
 
-exp.beta        <- P.T1.doZ1 / P.T1.doZ0        # marginal causal effect
-exp.beta.W1     <- P.T1.doZ1.W1 / P.T1.doZ0.W1  # stratum-specific causal effect in W = 1
-exp.beta.W0     <- P.T1.doZ1.W0 / P.T1.doZ0.W0  # stratum-specific causal effect in W = 0
+p.W0.Z1         <- p.Z.W0 * (1 - pW) / (p.Z.W1 * pW + p.Z.W0 * (1 - pW))  # P(W = 0 | Z = 1)
+p.W1.Z1         <- p.Z.W1 * pW / (p.Z.W1 * pW + p.Z.W0 * (1 - pW))        # P(W = 1 | Z = 1)
+P.T1.doZ1.Z1    <- exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 1 + eta.T1 * 1 * 1) * p.W1.Z1 + exp(alpha.T1 + beta.T1 * 1 + gamma.T1 * 0 + eta.T1 * 1 * 0) * p.W0.Z1 # P(T^{Z=1} = 1 | Z = 1)
+P.T1.doZ0.Z1    <- exp(alpha.T1 + beta.T1 * 0 + gamma.T1 * 1 + eta.T1 * 0 * 1) * p.W1.Z1 + exp(alpha.T1 + beta.T1 * 0 + gamma.T1 * 0 + eta.T1 * 0 * 0) * p.W0.Z1 # P(T^{Z=1} = 1 | Z = 1)
+
+exp.beta        <- P.T1.doZ1 / P.T1.doZ0        # marginal causal risk ratio
+exp.beta.Z1     <- P.T1.doZ1.Z1 / P.T1.doZ0.Z1  # causal risk ratio in the treated
+exp.beta.W1     <- P.T1.doZ1.W1 / P.T1.doZ0.W1  # stratum-specific causal risk ratio in W = 1
+exp.beta.W0     <- P.T1.doZ1.W0 / P.T1.doZ0.W0  # stratum-specific causal risk ratio in W = 0
 
 ### Varying parameters ---------------------------------------------------------
 BETA.T2         <- seq(from = 0, to = beta.T1, length.out = 4)
@@ -247,8 +253,11 @@ for (i in 1:nrow(param)) {
   mean.est.log.marginal.contrast  <- mean(log(RECAP1$marginal.contrast.est))
   mean.est.marginal.contrast      <- mean(RECAP1$marginal.contrast.est)
   
-  beta              <- mean(log(RECAP1$exp.beta))
-  relbias.marginal  <- (mean.est.log.marginal.contrast - beta) / beta
+  beta                            <- mean(log(RECAP1$exp.beta))
+  relbias.marginal.beta           <- (mean.est.log.marginal.contrast - beta) / beta
+  
+  beta.Z1                         <- mean(log(RECAP1$exp.beta.Z1))
+  relbias.marginal.beta.Z1        <- (mean.est.log.marginal.contrast - beta.Z1) / beta.Z1
   
   details.contrast.W1 <- rbind(details.contrast.W1, 
                                     c(mean.est.log.W1.contrast = mean.est.log.W1.contrast,
@@ -274,9 +283,11 @@ for (i in 1:nrow(param)) {
                                       eta.T1 = mean(RECAP1$eta.T1), 
                                       eta.T2 = as.numeric(as.character(RECAP1$eta.T2[1])),
                                       exp.beta = mean(RECAP1$exp.beta), 
+                                      exp.beta.Z1 = mean(RECAP1$exp.beta.Z1), 
                                       exp.beta.W1 = mean(RECAP1$exp.beta.W1), 
                                       exp.beta.W0 = mean(RECAP1$exp.beta.W0), 
                                       beta = beta,
+                                      beta.Z1 = beta.Z1,
                                       beta.W1 = beta.W1, 
                                       beta.W0 = beta.W0, 
                                       marginal.contrast = mean(RECAP1$marginal.contrast),
@@ -310,11 +321,13 @@ for (i in 1:nrow(param)) {
                                  eta.T1 = mean(RECAP1$eta.T1), 
                                  eta.T2 = as.numeric(as.character(RECAP1$eta.T2[1])),
                                  exp.beta = mean(RECAP1$exp.beta), 
+                                 exp.beta.Z1 = mean(RECAP1$exp.beta.Z1), 
                                  exp.beta.W1 = mean(RECAP1$exp.beta.W1), 
                                  exp.beta.W0 = mean(RECAP1$exp.beta.W0), 
-                                 beta = log(mean(RECAP1$exp.beta)),
-                                 beta.W1 = log(mean(RECAP1$exp.beta.W1)), 
-                                 beta.W0 = log(mean(RECAP1$exp.beta.W0)), 
+                                 beta = beta,
+                                 beta.Z1 = beta.Z1,
+                                 beta.W1 = beta.W1, 
+                                 beta.W0 = beta.W0, 
                                  marginal.contrast = mean(RECAP1$marginal.contrast),
                                  W0.contrast = mean(RECAP1$W0.contrast),
                                  W1.contrast = mean(RECAP1$W1.contrast),
@@ -325,7 +338,8 @@ for (i in 1:nrow(param)) {
   details.contrast.marginal <- rbind(details.contrast.marginal, 
                                      c(mean.est.log.marginal.contrast = mean.est.log.marginal.contrast,
                                        mean.est.marginal.contrast = mean.est.marginal.contrast,
-                                       relbias.marginal = relbias.marginal,
+                                       relbias.marginal.beta = relbias.marginal.beta,
+                                       relbias.marginal.beta.Z1 = relbias.marginal.beta.Z1,
                                        n = as.numeric(as.character(RECAP1$n[1])), 
                                        n.W1 = mean(RECAP1$n.W1),
                                        n.W0 = mean(RECAP1$n.W0), 
@@ -346,11 +360,13 @@ for (i in 1:nrow(param)) {
                                        eta.T1 = mean(RECAP1$eta.T1), 
                                        eta.T2 = as.numeric(as.character(RECAP1$eta.T2[1])),
                                        exp.beta = mean(RECAP1$exp.beta), 
+                                       exp.beta.Z1 = mean(RECAP1$exp.beta.Z1), 
                                        exp.beta.W1 = mean(RECAP1$exp.beta.W1), 
                                        exp.beta.W0 = mean(RECAP1$exp.beta.W0), 
-                                       beta = log(mean(RECAP1$exp.beta)),
-                                       beta.W1 = log(mean(RECAP1$exp.beta.W1)), 
-                                       beta.W0 = log(mean(RECAP1$exp.beta.W0)), 
+                                       beta = beta,
+                                       beta.Z1 = beta.Z1,
+                                       beta.W1 = beta.W1, 
+                                       beta.W0 = beta.W0, 
                                        marginal.contrast = mean(RECAP1$marginal.contrast),
                                        W0.contrast = mean(RECAP1$W0.contrast),
                                        W1.contrast = mean(RECAP1$W1.contrast),
@@ -377,6 +393,11 @@ details.contrast.W0$eta.T2 <- factor(details.contrast.W0$eta.T2,
                                      labels = c("eta[2]==0", "eta[2]==0.05", 
                                                 "eta[2]==0.1"))
 
+details.contrast.marginal$eta.T2 <- as.factor(details.contrast.marginal$eta.T2)
+details.contrast.marginal$eta.T2 <- factor(details.contrast.marginal$eta.T2, 
+                                     labels = c("eta[2]==0", "eta[2]==0.05", 
+                                                "eta[2]==0.1"))
+
 results <- rbind(cbind(value = details.contrast.W1$mean.est.log.W1.contrast, 
                        beta.T2 = details.contrast.W1$beta.T2, 
                        eta.T2 = details.contrast.W1$eta.T2, 
@@ -384,7 +405,11 @@ results <- rbind(cbind(value = details.contrast.W1$mean.est.log.W1.contrast,
                  cbind(value = details.contrast.W0$mean.est.log.W0.contrast, 
                        beta.T2 = details.contrast.W0$beta.T2, 
                        eta.T2 = details.contrast.W0$eta.T2, 
-                       Contrast = "cond.contrast.W0"))
+                       Contrast = "cond.contrast.W0"),
+                 cbind(value = details.contrast.marginal$mean.est.log.marginal.contrast, 
+                       beta.T2 = details.contrast.marginal$beta.T2, 
+                       eta.T2 = details.contrast.marginal$eta.T2, 
+                       Contrast = "marginal.contrast"))
 results           <- as.data.frame(results)
 results$value     <- as.numeric(results$value)
 results$beta.T2   <- as.numeric(results$beta.T2)
@@ -394,24 +419,28 @@ results$eta.T2    <- factor(results$eta.T2, labels = c("eta[2]==0",
                                                        "eta[2]==0.1"))
 results$Contrast  <- as.factor(results$Contrast)
 
-pdf(file = paste0("cond.contrasts_example1.pdf"), width = 8, height = 6)
+pdf(file = paste0("contrasts_example1.pdf"), width = 8, height = 6)
 ggplot(data = results, aes(x = beta.T2, y = value)) + 
   geom_line(linewidth = 0.8, aes(linetype = Contrast))  + 
   scale_x_continuous(expression(beta[2]), 
                      breaks = c(0, 0.2, 0.4, 0.6), 
                      labels = c("0", "0.2", "0.4", expression(beta[1]))) +
-  scale_y_continuous("mean of logarithm of estimated stratum-specific contrast", 
-                     breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8), 
+  scale_y_continuous("mean of logarithm of estimated contrasts", 
+                     breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7122209, 
+                                0.8), 
                      labels = c("0", "0.1", "0.2", "0.3", "0.4", "0.5", 
-                                expression(beta[W == 0]), "0.7", 
+                                expression(beta[W == 0]),
+                                expression(beta[Z == 1]),
                                 expression(beta[W == 1]))) +
   #scale_y_continuous("mean of estimated log-contrast") +
   facet_wrap(~ eta.T2, labeller = label_parsed) + theme_bw(base_size = 13) +
-  scale_linetype_manual(name = "Stratum",
+  scale_linetype_manual(name = "Contrasts",
                         values = c(cond.contrast.W1 = "dashed", 
-                                   cond.contrast.W0 = "dotted"),
-                        labels = c(cond.contrast.W1 = "W = 1", 
-                                   cond.contrast.W0 = "W = 0")) 
+                                   cond.contrast.W0 = "dotted",
+                                   marginal.contrast = "solid"),
+                        labels = c(cond.contrast.W1 = "cond W = 1", 
+                                   cond.contrast.W0 = "cond W = 0",
+                                   marginal.contrast = "marginal")) 
 dev.off()
 
 ### Trying to remove the small sample bias by considering population with 
@@ -611,6 +640,9 @@ mean.est.marginal.contrast      <- mean(RECAP$marginal.contrast.est)
 beta              <- mean(log(RECAP$exp.beta))
 relbias.marginal  <- (mean.est.log.marginal.contrast - beta) / beta
 
+beta.Z1                   <- mean(log(RECAP$exp.beta.Z1))
+relbias.marginal.beta.Z1  <- (mean.est.log.marginal.contrast - beta.Z1) / beta.Z1
+
 ### Trying to remove the small sample bias by considering population with 
 ### n = 5 * 10^6 individuals instead -----------------------------------------------
 
@@ -784,23 +816,29 @@ RECAP[ColNames] <- sapply(RECAP[ColNames], as.numeric)
 myfile  <- paste0("SimulationResults-example1-n", n, ".Rdata")
 save(RECAP, file = myfile)
 
-5 * 10^6
+n <- 5 * 10^6
 load(paste0("SimulationResults-example1-n", n, ".Rdata"))
 
 # mean of estimated stratum-specific contrast for W = 1
 mean.est.log.W1.contrast  <- mean(log(RECAP$W1.contrast.est))
 mean.est.W1.contrast      <- mean(RECAP$W1.contrast.est)
+
 beta.W1     <- mean(log(RECAP$exp.beta.W1))
 relbias.W1  <- (mean.est.log.W1.contrast - beta.W1) / beta.W1
 
 # mean of estimated stratum-specific contrast for W = 0
 mean.est.log.W0.contrast  <- mean(log(RECAP$W0.contrast.est))
 mean.est.W0.contrast      <- mean(RECAP$W0.contrast.est)
+
 beta.W0     <- mean(log(RECAP$exp.beta.W0))
 relbias.W0  <- (mean.est.log.W0.contrast - beta.W0) / beta.W0
 
 # mean of estimated marginal contrast
 mean.est.log.marginal.contrast  <- mean(log(RECAP$marginal.contrast.est))
 mean.est.marginal.contrast      <- mean(RECAP$marginal.contrast.est)
+
 beta              <- mean(log(RECAP$exp.beta))
 relbias.marginal  <- (mean.est.log.marginal.contrast - beta) / beta
+
+beta.Z1                   <- mean(log(RECAP$exp.beta.Z1))
+relbias.marginal.beta.Z1  <- (mean.est.log.marginal.contrast - beta.Z1) / beta.Z1
