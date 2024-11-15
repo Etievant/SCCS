@@ -1,8 +1,8 @@
 ## -----------------------------------------------------------------------------
-## Description: This script illustrates Apple Tree Shaking Phenomenon presented 
-##              in Section 5 in Etievant, Gail and Follmann (2024)
+## Description: This script illustrates the Acceleration Effect presented in
+##              Section 5.2 in Etievant, Gail and Follmann (2024)
 ##
-##              The simulation is in Section 7.2 in the Main Document
+##              The simulation is in Section 8.2 in the Main Document
 ##
 ##              We consider a scenario where W is the empty set
 ## -----------------------------------------------------------------------------
@@ -46,9 +46,9 @@ onerun <- function(p) {
   P.T1.doZ1     <- P.T1.doZ0 + p21 * P.T2.doZ0 # P(T^{Z=1} = 1)
   P.T2.doZ1     <- (1 - p21) * P.T2.doZ0       # P(T^{Z=1} = 2)
   
-  exp.beta.T1   <- P.T1.doZ1 / P.T1.doZ0 # marginal causal effect over period 1
-  exp.beta.T2   <- P.T2.doZ1 / P.T2.doZ0 # marginal causal effect over period 2
-  exp.beta.T12  <- (P.T1.doZ1 + P.T2.doZ1) / (P.T1.doZ0 + P.T2.doZ0) # marginal causal effect over period 1 + period 2
+  exp.beta.T1   <- P.T1.doZ1 / P.T1.doZ0 # marginal causal risk ratio over period 1
+  exp.beta.T2   <- P.T2.doZ1 / P.T2.doZ0 # marginal causal risk ratio over period 2
+  exp.beta.T12  <- (P.T1.doZ1 + P.T2.doZ1) / (P.T1.doZ0 + P.T2.doZ0) # marginal causal risk ratio over period 1 + period 2
   
   # Focus is on the marginal contrast as W = empty set
   marginal.contrast   <- P.T1.doZ1 / P.T2.doZ1
@@ -167,7 +167,7 @@ for (i in 1:length(param)) {
                                        beta.period2 = mean(log(exp.beta.T2)),
                                        beta.period12 = mean(log(exp.beta.T12)),
                                        marginal.contrast = mean(RECAP1$marginal.contrast),
-                                       log.marginal.contrast = mean(RECAP1$log.marginal.contrast)))
+                                       log.marginal.contrast = mean(log(RECAP1$marginal.contrast))))
 }
 details.marginal.contrast <- as.data.frame(details.marginal.contrast)
 
@@ -209,3 +209,4 @@ ggplot(data = results, aes(x = p21, y = value, linetype = Contrast,
                         values = c("dotdash", "dashed", "dotted", "solid"), 
                         labels = legend_labels)
 dev.off()
+
