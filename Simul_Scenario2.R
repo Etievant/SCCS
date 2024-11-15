@@ -1,9 +1,9 @@
 ## -----------------------------------------------------------------------------
 ## Description: This script illustrates Scenario 1 with violation of Condition 
-##              (ii) presented in Section 5 in Etievant, Gail and Follmann 
+##              (ii) presented in Section 4 in Etievant, Gail and Follmann 
 ##              (2024)
 ##
-##              The simulation is in Section 7.1 in the Main Document
+##              The simulation is in Section 8.1 in the Main Document
 ## -----------------------------------------------------------------------------
 
 ### load packages --------------------------------------------------------------
