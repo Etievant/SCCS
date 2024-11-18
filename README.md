@@ -25,4 +25,4 @@ tidyr, parallel, ggplot2.
 
 * Open and run the whole script(s).
 
-* The results of the simulations are saved in figures. For example, when running script `Simul_Scenario1.R`, file contrasts_example1.pdf will give the same results as displayed in Figure 3 of Section 8.1.
+* The results of the simulations are saved Rdata files and in figures. For example, when running script `Simul_Scenario1.R`, file contrasts_example1.pdf will give the same results as displayed in Figure 3 of Section 8.1. Folder SimulResults in the repository contains all the results files.
