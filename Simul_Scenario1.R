@@ -188,6 +188,7 @@ onerun <- function(p) {
                             beta.T1 = beta.T1,         
                             beta.T2 = beta.T2,
                             exp.beta = exp.beta,
+                            exp.beta.Z1 = exp.beta.Z1,
                             exp.beta.W1 = exp.beta.W1,
                             exp.beta.W0 = exp.beta.W0,
                             marginal.contrast = marginal.contrast,
@@ -214,7 +215,7 @@ for (p in 1:nrow(param)) {
   RES <- rbind(RES, res)
 }
 RECAP           <- as.data.frame(RES)
-ColNames        <- colnames(RECAP[,c(1:29)])
+ColNames        <- colnames(RECAP[,c(1:30)])
 RECAP[ColNames] <- sapply(RECAP[ColNames], as.numeric)
 RECAP$beta.T2   <- as.factor(RECAP$beta.T2)
 RECAP$eta.T2    <- as.factor(RECAP$eta.T2)
@@ -586,6 +587,7 @@ onerun    <- function(p) {
                             p.Z.W1 = p.Z.W1,
                             p.Z.W0 = p.Z.W0,
                             exp.beta = exp.beta,
+                            exp.beta.Z1 = exp.beta.Z1,
                             exp.beta.W1 = exp.beta.W1,
                             exp.beta.W0 = exp.beta.W0,
                             marginal.contrast = marginal.contrast,
@@ -611,7 +613,7 @@ for (p in 1:nrow(param)) {
   RES <- rbind(RES, res)
 }
 RECAP           <- as.data.frame(RES)
-ColNames        <- colnames(RECAP[,c(1:29)])
+ColNames        <- colnames(RECAP[,c(1:30)])
 RECAP[ColNames] <- sapply(RECAP[ColNames], as.numeric)
 myfile  <- paste0("SimulationResults-example1-n", n, ".Rdata")
 save(RECAP, file = myfile)
@@ -786,6 +788,7 @@ onerun    <- function(p) {
                             p.Z.W1 = p.Z.W1,
                             p.Z.W0 = p.Z.W0,
                             exp.beta = exp.beta,
+                            exp.beta.Z1 = exp.beta.Z1,
                             exp.beta.W1 = exp.beta.W1,
                             exp.beta.W0 = exp.beta.W0,
                             marginal.contrast = marginal.contrast,
@@ -811,7 +814,7 @@ for (p in 1:nrow(param)) {
   RES <- rbind(RES, res)
 }
 RECAP           <- as.data.frame(RES)
-ColNames        <- colnames(RECAP[,c(1:29)])
+ColNames        <- colnames(RECAP[,c(1:30)])
 RECAP[ColNames] <- sapply(RECAP[ColNames], as.numeric)
 myfile  <- paste0("SimulationResults-example1-n", n, ".Rdata")
 save(RECAP, file = myfile)
@@ -842,3 +845,4 @@ relbias.marginal  <- (mean.est.log.marginal.contrast - beta) / beta
 
 beta.Z1                   <- mean(log(RECAP$exp.beta.Z1))
 relbias.marginal.beta.Z1  <- (mean.est.log.marginal.contrast - beta.Z1) / beta.Z1
+
