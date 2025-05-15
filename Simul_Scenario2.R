@@ -243,5 +243,6 @@ ggplot(data = details.contrast.marginal, aes(x = alpha.T2,
                      breaks = c(-0.6, -0.4, -0.2, 0, 0.2, 0.3), 
                      labels =c("-0.6", "-0.4", "-0.2", "0", "0.2", 
                                expression(beta))) +
-  facet_wrap(~ gamma.T2, labeller = label_parsed) + theme_bw(base_size = 13)
+  facet_wrap(~ gamma.T2, labeller = label_parsed) + theme_bw(base_size = 13) +
+  geom_hline(yintercept = 0.3, color = "darkgrey")
 dev.off()
