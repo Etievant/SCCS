@@ -264,5 +264,7 @@ ggplot(data = details.marginal.contrast, aes(x = p.detect.T2,
   scale_y_continuous("Mean of logarithm of estimated marginal contrast", 
                      breaks = c(0, 0.1, 0.2, 0.3), 
                      labels =c(expression(beta), "0.1", "0.2", "0.3")) +
-  theme_bw(base_size = 13)
+  theme_bw(base_size = 13) + 
+  geom_hline(yintercept = 0, color = "darkgrey")
 dev.off()
+
