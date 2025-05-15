@@ -441,7 +441,10 @@ ggplot(data = results, aes(x = beta.T2, y = value)) +
                                    marginal.contrast = "solid"),
                         labels = c(cond.contrast.W1 = "cond W = 1", 
                                    cond.contrast.W0 = "cond W = 0",
-                                   marginal.contrast = "marginal")) 
+                                   marginal.contrast = "marginal")) +
+  geom_hline(yintercept = 0.6, color = "darkgrey") +
+  geom_hline(yintercept = 0.7122209, color = "darkgrey") +
+  geom_hline(yintercept = 0.8, color = "darkgrey")
 dev.off()
 
 ### Trying to remove the small sample bias by considering population with 
