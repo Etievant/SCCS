@@ -191,22 +191,27 @@ results$p21       <- as.numeric(results$p21)
 results$Contrast  <- as.factor(results$Contrast)
 
 legend_labels     <- c(marginal.contrast = "Mean of logarithm of estimated marginal contrast",
-                       effect.period1 = expression(log(P(T^{Z==1} == 1)/P(T^{Z==0} == 1))), 
-                       effect.period2 = expression(log(P(T^{Z==1} == 2) / P(T^{Z==0} == 2))),
-                       effect.period12 = expression(log((P(T^{Z==1} == 1) + P(T^{Z==1} == 2)) / (P(T^{Z==0} == 1) + P(T^{Z==0} == 2)))))
-                  
-pdf(file = paste0("marginal.contrast_ats.pdf"), width = 8, height = 6)
+                       effect.period1 = "log causal risk ratio over period 1", 
+                       effect.period2 = "log causal risk ratio over period 2",
+                       effect.period12 = "log causal risk ratio over periods 1 and 2")
+
+pdf(file = paste0("marginal.contrast_ats.pdf"), width = 6, height = 6)
 ggplot(data = results, aes(x = p21, y = value, linetype = Contrast, 
                            colour = Contrast)) + 
   geom_line(linewidth = 0.8) + 
   xlab(expression(P({T^{Z==1} == 1}*'|'*{T^{Z==0} == 2}))) + 
   ylab("") + 
   theme_bw(base_size = 13) + 
+  scale_y_continuous("mean of logarithm of estimated contrasts") +
   scale_colour_manual(name = "", 
                       values = c("orange", "pink", "lightblue", "black"), 
-                      labels = legend_labels) +
+                      labels = NULL) +
   scale_linetype_manual(name = "", 
                         values = c("dotdash", "dashed", "dotted", "solid"), 
-                        labels = legend_labels)
+                        labels = NULL) +
+  theme(legend.position = "none") +
+  annotate('text', x = 0.166, y = 0.17, label = legend_labels[2], size = 3, color = "orange", angle = 16) +
+  annotate('text', x = 0.156, y = 0.016, label = legend_labels[4], size = 3, color = "pink") +
+  annotate('text', x = 0.168, y = -0.168, label = legend_labels[3], size = 3, color = "lightblue", angle = -21)
 dev.off()
 
